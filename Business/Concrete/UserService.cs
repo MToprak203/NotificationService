@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.DTO;
 using Entities;
@@ -20,7 +22,7 @@ namespace Business.Concrete
             _emailDal = emailDal;
         }
 
-        public void AddUser(AddUserDTO userDTO)
+        public IResult AddUser(AddUserDTO userDTO)
         {
             IValidator<AddUserDTO> validator = new AddUserValidator();
 
@@ -29,12 +31,12 @@ namespace Business.Concrete
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors;
+                string message = "";
 
                 foreach (var error in errors)
-                {
-                    Console.WriteLine($"While Adding User:\nProperty: {error.PropertyName}, Error: {error.ErrorMessage}");
-                }
-                return;
+                    message += $"While Adding User:\nProperty: {error.PropertyName}, Error: {error.ErrorMessage}\n\n";
+                
+                return new Result(false, message);
             }
 
 
@@ -49,10 +51,21 @@ namespace Business.Concrete
             newEmail.User = newUser;
             newUser.Email = newEmail;
 
-            // I need to add transaction here
+            // If databased is used, transaction should be used.
+
+            if (_emailDal.Get(e => e.Username == newEmail.Username && e.Provider == newEmail.Provider) != null)
+                return new Result(false, "Email is using");
+            
+
+            if (_phoneDal.Get(p => p.CountryCode == newPhone.CountryCode && p.Number == newPhone.Number) != null)
+                return new Result(false, "Phone is using");
+            
+
             var emailResult = _emailDal.Add(newEmail);
             var phoneResult = _phoneDal.Add(newPhone);
             var userResult = _userDal.Add(newUser);
+
+            return new Result(true, "User added");
         }
 
         private Phone CreatePhone(AddUserDTO userDTO) 

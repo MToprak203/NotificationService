@@ -1,9 +1,10 @@
-﻿using DataAccess.Concrete.DTO;
+﻿using Core.Utilities.Results.Abstract;
+using DataAccess.Concrete.DTO;
 
 namespace Business.Abstract
 {
     public interface IUserService
     {
-        public void AddUser(AddUserDTO userDTO);
+        public IResult AddUser(AddUserDTO userDTO);
     }
 }
