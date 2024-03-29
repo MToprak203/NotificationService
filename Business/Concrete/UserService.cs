@@ -53,11 +53,11 @@ namespace Business.Concrete
 
             // If databased is used, transaction should be used.
 
-            if (_emailDal.Get(e => e.Username == newEmail.Username && e.Provider == newEmail.Provider) != null)
+            if (_emailDal.Get(e => e.Username == newEmail.Username && e.Provider == newEmail.Provider).Data != null)
                 return new Result(false, "Email is using");
             
 
-            if (_phoneDal.Get(p => p.CountryCode == newPhone.CountryCode && p.Number == newPhone.Number) != null)
+            if (_phoneDal.Get(p => p.CountryCode == newPhone.CountryCode && p.Number == newPhone.Number).Data != null)
                 return new Result(false, "Phone is using");
             
 
@@ -74,6 +74,7 @@ namespace Business.Concrete
             phone.Number = userDTO.Phone;
             phone.CountryCode = userDTO.CountryCode;
             phone.DeviceToken = userDTO.DeviceToken;
+            phone.OS = userDTO.OS;
             return phone;
         }
 

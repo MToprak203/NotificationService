@@ -1,4 +1,5 @@
-﻿using Core.Utilities.Results.Abstract;
+﻿using Business.Abstract;
+using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.DTO;
@@ -9,7 +10,7 @@ using Validation;
 
 namespace Business.Concrete
 {
-    public class NotificationBodyService
+    public class NotificationBodyService : INotificationBodyService
     {
         private INotificationBodyDal _notificationBodyDal;
 
@@ -17,7 +18,7 @@ namespace Business.Concrete
         {
             _notificationBodyDal = notificationBodyDal;
         }
-        public IResult CreateNotification(AddNotificationBodyDTO notificationBody)
+        public IResult CreateNotificationBody(AddNotificationBodyDTO notificationBody)
         {
             IValidator<AddNotificationBodyDTO> validator = new AddNotificationBodyValidator();
 
@@ -34,7 +35,7 @@ namespace Business.Concrete
                 return new Result(false, message);
             }
 
-            if (_notificationBodyDal.Get(nb => nb.Title == notificationBody.Title && nb.NotificationOwner == notificationBody.Owner) != null)
+            if (_notificationBodyDal.Get(nb => nb.Title == notificationBody.Title && nb.NotificationOwner == notificationBody.Owner).Data != null)
             {
                 return new Result(false, "There is same titled notification");
             }
@@ -47,7 +48,7 @@ namespace Business.Concrete
 
             _notificationBodyDal.Add(nb);
 
-            return new Result(true);
+            return new Result(true, "Notification body created");
         }
 
         public IDataResult<IEnumerable<NotificationBody>> GetNotificationBodies(Expression<Func<NotificationBody, bool>> filter = null)

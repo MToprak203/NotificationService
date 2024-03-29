@@ -22,7 +22,7 @@ namespace Validation
             if (!phone.All(char.IsDigit))
                 return false;
 
-            const int expectedLength = 10; 
+            const int expectedLength = 10;
 
             return phone.Length == expectedLength;
         }

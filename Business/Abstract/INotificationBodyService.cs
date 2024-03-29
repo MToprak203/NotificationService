@@ -7,7 +7,7 @@ namespace Business.Abstract
 {
     public interface INotificationBodyService
     {
-        public IResult CreateNotification(AddNotificationBodyDTO notificationBody);
+        public IResult CreateNotificationBody(AddNotificationBodyDTO notificationBody);
         public IDataResult<IEnumerable<NotificationBody>> GetNotificationBodies(Expression<Func<NotificationBody, bool>> filter = null);
     }
 }
